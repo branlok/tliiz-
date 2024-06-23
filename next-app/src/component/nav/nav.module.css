@@ -1,0 +1,7 @@
+.nav {
+    height: 25px;
+    border-bottom: 1px solid grey;
+    font-family: monospace;
+    width: 100%;
+    color:  var(--text-color);
+}

@@ -1,12 +1,20 @@
 "use client"
 import { useState } from "react";
 import styles from "./page.module.css";
+import Nav from "../component/nav";
+import Builder from "../component/builder";
 
 export default function Home() {
   let [x, setX] = useState(false);
+
+
+
   return (
     <main className={styles.main}>
-      <nav className={styles.nav}>tiico</nav>
+      {/* <nav className={styles.nav}>tiico</nav> */}
+      <Nav />
+      <Builder />
+      {/*       
       <div className={styles.list}>
         <h1 className={styles.title}>A tierlist Title</h1>
         <div className={styles.container}>
@@ -110,7 +118,7 @@ export default function Home() {
 
           </div>
         </div>
-      </div>
+      </div> */}
     </main>
   );
 }
