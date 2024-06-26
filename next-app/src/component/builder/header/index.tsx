@@ -1,5 +1,6 @@
 import React, { ReactElement } from 'react'
 import styles from './index.module.css';
+import Tools from './Tools';
 type Props = {
     titleComponent?: ReactElement,
     actionComponent?: ReactElement
@@ -21,7 +22,7 @@ function index({ titleComponent = ExampleTitle, actionComponent = ExampleActions
     return (
         <header className={styles.header}>
             <div className={styles.titleContainer}>{titleComponent}</div>
-            <div className={styles.actionContainer}>{actionComponent}</div>
+            <div className={styles.actionContainer}><Tools /></div>
         </header>
     )
 }

@@ -3,6 +3,11 @@ import styles from './index.module.css';
 import ArrowDown from '../../../../icons/arrowDown';
 import ThreeDots from '../../../../icons/threeDots';
 import DragHandle from '../../../../icons/dragHandle';
+import Cards from './card';
+import { useCounterStore } from '../../../../states/zustand/provider';
+import Card from './card';
+import { SortableContext, horizontalListSortingStrategy, useSortable } from '@dnd-kit/sortable';
+import CardDragWrapper from './card/cardDragWrapper';
 
 //logic for generating rows
 /**
@@ -16,22 +21,35 @@ import DragHandle from '../../../../icons/dragHandle';
 // - Default
 // - Stuff that I like
 
-function index({ name, collapse }: Props) {
-    let [drawerOpen, setDrawerOpen] = useState(collapse);
+function index({ name, collapse, id, activeId }: Props) {
+    // Get Store
+    let { itemOrder, toggleRowCollapse: setDrawerCollapse } = useCounterStore(state => state);
+    let group = useCounterStore(state => state.groups[id]);
+
+    const { setActivatorNodeRef, listeners } = useSortable({
+        id: id,
+    });
+    let drawerCollapse = group.viewPreference.drawerCollapse;
+
+    // let [setDrawerCollapse] = useState(group.viewPreference.drawerCollapse);
     let [settingsOpen, setSettingsOpen] = useState(false);
-    let collapseButton = <button className={styles.collapseButton} style={{ transform: !drawerOpen ? 'rotate(180deg)' : '' }} onClick={() => setDrawerOpen(prev => !prev)}><ArrowDown /></button>;
+    let collapseButton = <button className={styles.collapseButton} style={{ transform: !drawerCollapse ? 'rotate(180deg)' : '' }} onClick={() => setDrawerCollapse(id)}><ArrowDown /></button>;
     return (
-        <div className={styles.row} data-collapse={drawerOpen}>
+        <div className={styles.row} data-collapse={drawerCollapse}>
             <header className={styles.header}>
                 <div className={styles.titleWrapper}>
-                    <div className={styles.highlight}>1</div>
-                    <h1 className={styles.rowTitle}>{name}</h1>
+                    <div ref={setActivatorNodeRef} {...listeners} className={styles.highlight}></div>
+                    <h1 className={styles.rowTitle}>{group.title}</h1>
                 </div>
                 <div className={styles.tools}>
+                    <div>
+                        {itemOrder[id].map(item => (
+                            <Card key={item} id={item} />
+                        ))}
+                    </div>
                     {!settingsOpen && <button className={styles.openSettingsButton} onClick={() => setSettingsOpen(prev => !prev)}><ThreeDots /></button>}
                     {settingsOpen && <div className={styles.openSettingsContainer}>
                         {/* delete */}
-                        
                         <button className={styles.openSettingsButton} onClick={() => setSettingsOpen(prev => !prev)}>a</button>
                         <button className={styles.openSettingsButton} onClick={() => setSettingsOpen(prev => !prev)}>b</button>
                         <button className={styles.openSettingsButton} onClick={() => setSettingsOpen(prev => !prev)}>x</button></div>}
@@ -40,8 +58,17 @@ function index({ name, collapse }: Props) {
             </header>
             <div className={styles.cardContainer}>
                 {/* fill cards */}
+                <div className={styles.cardContainerInner}>
+                    <SortableContext items={itemOrder[id]} strategy={horizontalListSortingStrategy}>
+                        {itemOrder[id].map(item => (
+                            <CardDragWrapper key={item} id={item} parentId={id} isActive={activeId === item}>
+                                <Card key={item} id={item} />
+                            </CardDragWrapper>
+                        ))}
+                    </SortableContext>
+                </div>
             </div>
-            <div className={styles.rowController} data-collapse={drawerOpen}>
+            <div className={styles.rowController} data-collapse={drawerCollapse}>
                 {collapseButton}
             </div>
         </div>

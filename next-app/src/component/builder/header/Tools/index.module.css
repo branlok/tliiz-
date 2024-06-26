@@ -1,0 +1,15 @@
+.toolContainer {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    height: 100%;
+    justify-content: flex-end;
+    .actionButton {
+        border-style: none;
+        padding: 5px;
+        color: white;
+        border-radius: 2px;
+        height: 30px;
+        margin: 0px 5px;
+    }
+}
