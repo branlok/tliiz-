@@ -11,18 +11,14 @@ import { useCounterStore } from '../../../../../states/zustand/provider';
  * @returns 
  */
 
-function index({ id }: Props) {
+function index({ id, isActive, onClickHandler }: Props) {
     //uses id to populate card.
     let item = useCounterStore(state => state.items[id]);
 
     return (
-        <div className={styles.cardWrapper}>
+        <div onClick={onClickHandler} className={styles.cardWrapper} style={{ opacity: isActive ? 1 : 1, marginLeft: isActive ? '15px' : '0px' }}>
             <div className={styles.card}>
                 <img className={styles.cardImg} src={item.media.image} alt="" />
-            </div>
-            <div className={styles.cardInfo}>
-                <span className={styles.subtitle}>{item.subtitle}</span>
-                <h1 className={styles.title}>{item.title}</h1>
             </div>
         </div>
     )

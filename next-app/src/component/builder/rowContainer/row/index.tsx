@@ -2,12 +2,13 @@ import React, { ReactElement, useState } from 'react'
 import styles from './index.module.css';
 import ArrowDown from '../../../../icons/arrowDown';
 import ThreeDots from '../../../../icons/threeDots';
-import DragHandle from '../../../../icons/dragHandle';
-import Cards from './card';
 import { useCounterStore } from '../../../../states/zustand/provider';
 import Card from './card';
 import { SortableContext, horizontalListSortingStrategy, useSortable } from '@dnd-kit/sortable';
 import CardDragWrapper from './card/cardDragWrapper';
+import PreviewCards from './PreviewCards';
+import { useDropzone } from 'react-dropzone';
+import FileDropper from './FileDropper';
 
 //logic for generating rows
 /**
@@ -42,10 +43,12 @@ function index({ name, collapse, id, activeId }: Props) {
                     <h1 className={styles.rowTitle}>{group.title}</h1>
                 </div>
                 <div className={styles.tools}>
-                    <div>
-                        {itemOrder[id].map(item => (
-                            <Card key={item} id={item} />
-                        ))}
+                    <div className={styles.previewCardsContainerWrapper}>
+                        <div className={styles.previewCardsContainer} style={{ display: drawerCollapse ? 'flex' : 'none' }}>
+                            {itemOrder[id].map(item => (
+                                <PreviewCards onClickHandler={() => setDrawerCollapse(id)} key={item} id={item} isActive={activeId === item} />
+                            ))}
+                        </div>
                     </div>
                     {!settingsOpen && <button className={styles.openSettingsButton} onClick={() => setSettingsOpen(prev => !prev)}><ThreeDots /></button>}
                     {settingsOpen && <div className={styles.openSettingsContainer}>
@@ -66,6 +69,8 @@ function index({ name, collapse, id, activeId }: Props) {
                             </CardDragWrapper>
                         ))}
                     </SortableContext>
+                    {itemOrder[id].length === 0 ?
+                        <FileDropper /> : null}
                 </div>
             </div>
             <div className={styles.rowController} data-collapse={drawerCollapse}>

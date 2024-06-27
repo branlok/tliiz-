@@ -11,9 +11,10 @@ function index({ }: Props) {
     let OpenOnlyLastRow = useCounterStore(state => state.OpenOnlyLastRow)
     return (
         <div className={styles.toolContainer}>
-            <button className={styles.actionButton} onClick={expandAllRows}>Expand All</button>
-            <button className={styles.actionButton} onClick={OpenOnlyLastRow}>Expand Only Last</button>
+            <button className={styles.actionButton} onClick={expandAllRows}>A</button>
+            <button className={styles.actionButton} onClick={OpenOnlyLastRow}>B</button>
         </div>
+
     )
 }
 

@@ -1,0 +1,10 @@
+.noItemMessage {
+    border: 1px dashed grey;
+    width: calc(100% - 20px);
+    height: calc(100% - 20px);
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0.5;
+}

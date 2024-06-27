@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import styles from './index.module.css';
 import Header from './header';
 import RowContainer from './rowContainer';
@@ -11,6 +11,8 @@ import Card from './rowContainer/row/card';
 type Props = {}
 
 import { CSS } from '@dnd-kit/utilities';
+import CardOutlineOverlay from './rowContainer/row/card/CardOutlineOverlay';
+import { db } from '../../dexie';
 
 const customDropAnimation = {
     keyframes({ transform }) {
@@ -70,6 +72,8 @@ function index({ options }: Props) {
 
     let [activeId, setActiveId] = useState(null);
 
+    // if clientside
+
     const sensors = useSensors(
         useSensor(MouseSensor, {
             activationConstraint: {
@@ -88,11 +92,10 @@ function index({ options }: Props) {
         })
     );
 
-    
-
-    const { changeRowOrder, changeCardSameRow, changeCardDiffRow, pushCardToNewRow, groupOrder, items } = useCounterStore(
+    const { updateImageUrl, changeRowOrder, changeCardSameRow, changeCardDiffRow, pushCardToNewRow, groupOrder, items } = useCounterStore(
         (state) => state,
     )
+
 
 
     let onDragEndHandler = (event) => {
@@ -148,6 +151,7 @@ function index({ options }: Props) {
 
     }
 
+
     return (
         <div className={styles.listWrapper}>
             {/* Header Row: Title, Actions*/}
@@ -159,9 +163,10 @@ function index({ options }: Props) {
                 sensors={sensors}
             >
                 <RowContainer activeId={activeId} />
-                <DragOverlay  dropAnimation={null}>
+                <DragOverlay dropAnimation={null}>
                     {activeId && groupOrder.includes(activeId) && <Row id={activeId} />}
-                    {activeId && items[activeId] && <Card id={activeId} />}
+                    {activeId && items[activeId] && <CardOutlineOverlay><Card id={activeId} /></CardOutlineOverlay>}
+                    {/* {activeId && items[activeId] && <Card id={activeId} />} */}
                     {/* {activeId && <Row id={activeId} />} */}
                 </DragOverlay>
             </DndContext>

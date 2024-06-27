@@ -20,7 +20,7 @@ function index({ activeId }: Props) {
 
     return (
         <div className={styles.rowWrapper}>
-            <button onClick={() => addNewItem('hello')}>create</button>
+            {/* <button onClick={() => addNewItem('hello')}>create</button> */}
             <SortableContext items={groupOrder} strategy={verticalListSortingStrategy}>
                 {groupOrder.map((item) => {
                     return (

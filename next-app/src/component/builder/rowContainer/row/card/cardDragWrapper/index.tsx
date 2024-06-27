@@ -17,9 +17,11 @@ function CardDragWrapper({ id, isActive, children, activeAttribute = false, pare
     const style = {
         transform: CSS.Transform.toString(transform),
         transition,
-        opacity: isActive ? 0 : 1
+        opacity: isActive ? 0 : 1,
+        // height: "100%",
+        // aspectRatio: "1 / 1"
     };
-    
+
     return (
         <div ref={setNodeRef} data-active={activeAttribute} style={style} {...attributes} {...listeners} >
             {children}
