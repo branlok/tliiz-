@@ -4,6 +4,7 @@ import { createJSONStorage, persist } from 'zustand/middleware'
 import { immer } from 'zustand/middleware/immer'
 import { nanoid } from 'nanoid'
 import { db } from '../../dexie'
+import { useState } from 'react'
 
 // utils:
 /*
@@ -134,6 +135,14 @@ export let newClientStore = {
                 drawerCollapse: false
             }
         },
+        'unordered': {
+            'id': 'unordered',
+            'title': 'unordered',
+            'description': 'For rank C',
+            'viewPreference': {
+                drawerCollapse: false
+            }
+        }
     },
     groupOrder: ['tierSSS', 'tierSS', 'tierS', 'tierA'],
     itemOrder: {
@@ -141,6 +150,7 @@ export let newClientStore = {
         'tierSS': [],
         'tierS': [],
         'tierA': ['002', '003', '004', '005', '006'],
+        'unordered': []
     },
 }
 
@@ -148,6 +158,30 @@ export let newClientStore = {
 export const createListStructure = (initialState) => {
     return createStore()(persist(immer((set) => ({
         ...initialState,
+        _hasHydrated: false,
+        setHasHydrated: (status) => set((state) => {
+            state._hasHydrated = status;
+        }),
+        deleteRow: (id) => set((state) => {
+            delete state.groups[id];
+            state.groupOrder = state.groupOrder.filter(item => item !== id);
+
+            // if any exists
+            state.itemOrder.unordered.push(...state.itemOrder[id]);
+            delete state.itemOrder[id];
+        }),
+        addNewRow: (id = nanoid(), title = "Untitled") => set((state) => {
+            state.groups[id] = {
+                id,
+                title,
+                description: '',
+                'viewPreference': {
+                    drawerCollapse: false
+                }
+            }
+            state.groupOrder.push(id);
+            state.itemOrder[id] = [];
+        }),
         addNewItem: (id = nanoid(), name = 'untitled', subtitle = 'notitle', imgSrc = 'https://cdn.donmai.us/sample/40/30/sample-403013d006428ea04c25aa095dbe4809.jpg') => set((state) => {
             // insert to last row
             console.log(id);
@@ -210,13 +244,13 @@ export const createListStructure = (initialState) => {
             let target = state.itemOrder[activeRowId].splice(dragIdx, 1);
             state.itemOrder[overRowId].push(...target);
         }),
+
     })), {
         name: 'tierlist', // name of the item in the storage (must be unique)
         storage: createJSONStorage(() => localStorage), // (optional) by default, 'localStorage' is used
-        version: 7,
+        version: 10,
         // skipHydration: true,
         onRehydrateStorage: () => (state) => {
-
             (async () => {
                 for (let item in state.items) {
                     if (state.items[item].media.local) {
@@ -230,12 +264,14 @@ export const createListStructure = (initialState) => {
                         }
                     }
                 }
+                state.setHasHydrated(true);
+                console.log('hydration finished')
             })()
-            console.log('hydration finished')
             return (state, error) => {
                 if (error) {
                     console.log('an error happened during hydration', error)
                 } else {
+                    state.setHasHydrated(true);
                     console.log('hydration finished')
                 }
             }
@@ -246,6 +282,23 @@ export const createListStructure = (initialState) => {
 }
 
 
+// export const useHydration = () => {
+//     const [hydrated, setHydrated] = useState(false)
 
+//     useEffect(() => {
+//         // Note: This is just in case you want to take into account manual rehydration.
+//         // You can remove the following line if you don't need it.
+//         const unsubHydrate = useBoundStore.persist.onHydrate(() => setHydrated(false))
 
+//         const unsubFinishHydration = useBoundStore.persist.onFinishHydration(() => setHydrated(true))
 
+//         setHydrated(useBoundStore.persist.hasHydrated())
+
+//         return () => {
+//             unsubHydrate()
+//             unsubFinishHydration()
+//         }
+//     }, [])
+
+//     return hydrated
+// }

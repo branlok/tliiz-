@@ -7,7 +7,6 @@ import Card from './card';
 import { SortableContext, horizontalListSortingStrategy, useSortable } from '@dnd-kit/sortable';
 import CardDragWrapper from './card/cardDragWrapper';
 import PreviewCards from './PreviewCards';
-import { useDropzone } from 'react-dropzone';
 import FileDropper from './FileDropper';
 
 //logic for generating rows
@@ -24,9 +23,12 @@ import FileDropper from './FileDropper';
 
 function index({ name, collapse, id, activeId }: Props) {
     // Get Store
-    let { itemOrder, toggleRowCollapse: setDrawerCollapse } = useCounterStore(state => state);
+    let { itemOrder, toggleRowCollapse: setDrawerCollapse , deleteRow,} = useCounterStore(state => state);
     let group = useCounterStore(state => state.groups[id]);
 
+
+    console.log(useCounterStore.persist);
+    
     const { setActivatorNodeRef, listeners } = useSortable({
         id: id,
     });
@@ -34,12 +36,13 @@ function index({ name, collapse, id, activeId }: Props) {
 
     // let [setDrawerCollapse] = useState(group.viewPreference.drawerCollapse);
     let [settingsOpen, setSettingsOpen] = useState(false);
+    
     let collapseButton = <button className={styles.collapseButton} style={{ transform: !drawerCollapse ? 'rotate(180deg)' : '' }} onClick={() => setDrawerCollapse(id)}><ArrowDown /></button>;
     return (
         <div className={styles.row} data-collapse={drawerCollapse}>
             <header className={styles.header}>
                 <div className={styles.titleWrapper}>
-                    <div ref={setActivatorNodeRef} {...listeners} className={styles.highlight}></div>
+                  {id === "unordered" || <div ref={setActivatorNodeRef} {...listeners} className={styles.highlight}></div>}
                     <h1 className={styles.rowTitle}>{group.title}</h1>
                 </div>
                 <div className={styles.tools}>
@@ -53,7 +56,7 @@ function index({ name, collapse, id, activeId }: Props) {
                     {!settingsOpen && <button className={styles.openSettingsButton} onClick={() => setSettingsOpen(prev => !prev)}><ThreeDots /></button>}
                     {settingsOpen && <div className={styles.openSettingsContainer}>
                         {/* delete */}
-                        <button className={styles.openSettingsButton} onClick={() => setSettingsOpen(prev => !prev)}>a</button>
+                       {id === 'unordered' || <button className={styles.openSettingsButton} onClick={() => {deleteRow(id); setSettingsOpen(prev => !prev)}}>delete</button>}
                         <button className={styles.openSettingsButton} onClick={() => setSettingsOpen(prev => !prev)}>b</button>
                         <button className={styles.openSettingsButton} onClick={() => setSettingsOpen(prev => !prev)}>x</button></div>}
                     {collapseButton}
@@ -69,7 +72,7 @@ function index({ name, collapse, id, activeId }: Props) {
                             </CardDragWrapper>
                         ))}
                     </SortableContext>
-                    {itemOrder[id].length === 0 ?
+                    {itemOrder[id].length === 0 && id === 'unordered' ?
                         <FileDropper /> : null}
                 </div>
             </div>

@@ -78,11 +78,12 @@
             align-items: center;
             width: 100%;
             .highlight {
-                min-width: 8px;
+                min-width: 6px;
                 min-height: 100%;
                 border-radius: 20px;
                 background-color: var(--highlight-text-color, var(--text-color));
                 margin-right: 5px;
+                user-select: none;
             }
             .rowTitle {
                 font-size: 12px;

@@ -1,0 +1,6 @@
+@media (min-width: 800px) {
+    .wrapperExclusive {
+        height: 100%;
+        aspect-ratio: 1 / 1;
+    }
+}

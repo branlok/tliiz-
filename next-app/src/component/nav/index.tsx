@@ -9,7 +9,7 @@ type Props = {}
 
 function index({ }: Props) {
     return (
-        <nav className={styles.nav}>ziiro/builder</nav>
+        <nav className={styles.nav}>Zalekt/builder</nav>
     )
 }
 

@@ -1,0 +1,39 @@
+.formWrapper {
+    width: 100%;
+    max-width: 700px;
+    height: 100%;
+    background-color: rgb(78, 78, 78);
+    padding: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0px;
+    font-family: monospace;
+    border-radius: 5px;
+    gap: 10px;
+    .input {
+        height: 100%;
+        width: 100%;
+        border-style: none;
+        padding: 5px 15px;
+        font-size: 16px;
+        font-weight: bold;
+        border-radius: px;
+        border: px solid var(--text-color);
+    }
+    .button {
+
+        height: calc(100% - 0px);
+        width: 100px;
+        flex-shrink: 0;
+        background-color: var(--text-color);
+        color: black;
+        border-style: none;
+        display: flex;
+        font-weight: bold;
+        justify-content: center;
+        align-items: center;
+        border-radius: 2px;
+
+    }
+}

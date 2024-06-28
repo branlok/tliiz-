@@ -12,7 +12,6 @@ type Props = {}
 
 import { CSS } from '@dnd-kit/utilities';
 import CardOutlineOverlay from './rowContainer/row/card/CardOutlineOverlay';
-import { db } from '../../dexie';
 
 const customDropAnimation = {
     keyframes({ transform }) {
@@ -92,7 +91,7 @@ function index({ options }: Props) {
         })
     );
 
-    const { updateImageUrl, changeRowOrder, changeCardSameRow, changeCardDiffRow, pushCardToNewRow, groupOrder, items } = useCounterStore(
+    const { updateImageUrl, changeRowOrder, changeCardSameRow, changeCardDiffRow, pushCardToNewRow, groupOrder, items, _hasHydrated } = useCounterStore(
         (state) => state,
     )
 
@@ -108,6 +107,8 @@ function index({ options }: Props) {
 
 
         if (activeType === "group") {
+            // unordered row suppose to be immovable.
+            if (overId === 'unordered' || activeId === 'unordered') return setActiveId(null)
             changeRowOrder(activeId, overId);
         } else if (activeType === "card") {
             //changeItemOnSameRow
@@ -127,6 +128,7 @@ function index({ options }: Props) {
     let onDragOverHandler = (event) => {
         const { active, over } = event;
         if (active === null || over === null) return
+
         let activeId = active.id;
         let overId = over.id;
         let activeType = active?.data?.current?.type;
@@ -134,7 +136,8 @@ function index({ options }: Props) {
 
 
         if (activeType === "group") {
-            changeRowOrder(activeId, overId);
+            if (overId === 'unordered' || activeId === 'unordered')
+                changeRowOrder(activeId, overId);
         } else if (activeType === "card") {
             //changeItemOnSameRow
             let parentId = active.data.current.parentId;
@@ -150,8 +153,9 @@ function index({ options }: Props) {
         }
 
     }
+    // let hydrate = useHydration();
 
-
+    if (!_hasHydrated) return <div>loading</div>;
     return (
         <div className={styles.listWrapper}>
             {/* Header Row: Title, Actions*/}
@@ -179,5 +183,25 @@ function index({ options }: Props) {
         </div>
     )
 }
+
+// const useHydration = () => {
+//     const [hydrated, setHydrated] = useState(false)
+//     useEffect(() => {
+//         // Note: This is just in case you want to take into account manual rehydration.
+//         // You can remove the following line if you don't need it.
+//         const unsubHydrate = useCounterStore.persist.onHydrate(() => setHydrated(false))
+
+//         const unsubFinishHydration = useCounterStore.persist.onFinishHydration(() => setHydrated(true))
+
+//         setHydrated(useCounterStore.persist.hasHydrated())
+
+//         return () => {
+//             unsubHydrate()
+//             unsubFinishHydration()
+//         }
+//     }, [])
+
+//     return hydrated
+// }
 
 export default index
